@@ -7,9 +7,10 @@ class MazeGenerator:
   S: int = 4 #(0100)
   W: int = 8 #(1000)
 
-  def __init__(self, width: int = 5, height: int = 5) -> None:
+  def __init__(self, width: int = 5, height: int = 5, seed: int | None = None) -> None:
           self.width: int = width
           self.height: int = height
+          self.random_gen = random.Random(seed)
           
           self.DX: dict[int, int] = {self.N: 0, self.E: 1, self.S: 0, self.W: -1}
           self.DY: dict[int, int] = {self.N: -1, self.E: 0, self.S: 1, self.W: 0}
@@ -55,7 +56,7 @@ class MazeGenerator:
       unvisited = self.radar_for_unvisited(currentx, currenty)
 
       if unvisited:
-        direction, nextx, nexty = random.choice(unvisited)
+        direction, nextx, nexty = self.random_gen.choice(unvisited)
         self.grid[currenty][currentx] &= ~direction
         self.grid[nexty][nextx] &= ~self.OPPOSITE[direction]
 
@@ -67,7 +68,7 @@ class MazeGenerator:
 
 
 if __name__ == "__main__":
-  maze = MazeGenerator(20,20)
+  maze = MazeGenerator(20,20,seed=42)
   my_maze = maze.maze_dfs()
   print("matriz final:")
   for line in my_maze:
