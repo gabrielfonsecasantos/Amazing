@@ -1,4 +1,4 @@
-
+from maze import MazeGenerator
 
 def config_parser(file_path: str) -> dict:
   config: dict = {}
@@ -64,5 +64,14 @@ def config_parser(file_path: str) -> dict:
 
 
 if __name__ == "__main__":
-  config = config_parser("/home/gabriel/42SP/Python/Amazing/config.txt")
-  print(config)
+  try:
+    config = config_parser("/home/gabriel/42SP/Python/Amazing/config.txt")
+  except FileNotFoundError as e:
+    print(f"Error reading config file: {e}.")
+
+  maze = MazeGenerator(config["WIDTH"], config["HEIGHT"], config["SEED"])
+  grid = maze.maze_dfs()
+  rendered_maze = maze.rendering_maze()
+  print(rendered_maze)  
+
+  

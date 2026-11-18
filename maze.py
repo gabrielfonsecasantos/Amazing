@@ -66,6 +66,33 @@ class MazeGenerator:
          stack.pop()
     return maze
 
+  def rendering_maze(self) -> str:
+    result: str = ""
+    lines: list = ["+" + "---+" * self.width]
+
+    for y in range(self.height):
+      row = ["|"]
+      for x in range(self.width):
+        cell: int = self.grid[y][x]
+        content: str = "   "
+        if cell & 2:
+          row.append(content + "|")
+        else:
+          row.append(content + " ")
+      lines.append("".join(row))
+      bottom_row = ["+"]
+      for x in range(self.width):
+        cell = self.grid[y][x]
+        if cell & 4:
+          bottom_row.append("---+")
+        else:
+          bottom_row.append("   +")
+      lines.append("".join(bottom_row))
+    for line in lines:
+      print(line)
+    return result
+       
+
 
 if __name__ == "__main__":
   maze = MazeGenerator(20,20,seed=42)
