@@ -70,6 +70,7 @@ if __name__ == "__main__":
     print(f"Error reading config file: {e}.")
 
   maze = MazeGenerator(config["WIDTH"], config["HEIGHT"], config["SEED"])
+  maze.draw_42_pattern()
   grid = maze.maze_dfs()
   rendered_maze = maze.rendering_maze()
   print(rendered_maze)  

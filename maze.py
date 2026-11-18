@@ -1,6 +1,14 @@
 import random
 
 
+PATTERN_42: list[str] = [
+    "#.. ###",
+    "#.. ..#",
+    "### ###",
+    "..# #..",
+    "..# ###",
+]
+
 class MazeGenerator:
   N: int = 1 #(0001)
   E: int = 2 #(0010)
@@ -11,6 +19,7 @@ class MazeGenerator:
           self.width: int = width
           self.height: int = height
           self.random_gen = random.Random(seed)
+          self.blocked_cells: set[tuple[int, int]] = set()
           
           self.DX: dict[int, int] = {self.N: 0, self.E: 1, self.S: 0, self.W: -1}
           self.DY: dict[int, int] = {self.N: -1, self.E: 0, self.S: 1, self.W: 0}
@@ -30,13 +39,35 @@ class MazeGenerator:
       self.grid.append(current_row)
       self.visited.append(visited_row)
     return self.grid
+  
+  def draw_42_pattern(self) -> None:
+    pattern_height: int = len(PATTERN_42) 
+    pattern_width: int = len(PATTERN_42[0])
+
+    if self.height < pattern_height + 2 or self.width < pattern_width + 2:
+      print("Warning: maze too small to show 42 pattern on the center.")
+      return
+
+    center_x = (self.width - pattern_width) // 2 
+    center_y = (self.height - pattern_height) // 2
+    for y in range(pattern_height):
+      for x in range(pattern_width):
+        if PATTERN_42[y][x] == "#":
+          real_x = center_x + x
+          real_y = center_y + y
+          self.blocked_cells.add((real_x, real_y))
 
   def radar_for_unvisited(self, currentx: int, currenty: int ) -> list[tuple[int, int, int]]:
     unvisited: list[tuple[int, int, int]] = []
     for direction in (self.N, self.E, self.S, self.W):
       nextx: int = currentx + self.DX[direction]
       nexty: int = currenty + self.DY[direction]
-      if 0 <= nextx < self.width and 0 <= nexty < self.height and not self.visited[nexty][nextx]:
+      if (
+        0 <= nextx < self.width
+        and 0 <= nexty < self.height
+        and not self.visited[nexty][nextx]
+        and (nextx, nexty) not in self.blocked_cells
+      ):
         unvisited.append((direction, nextx, nexty))
     return unvisited
       
@@ -45,6 +76,9 @@ class MazeGenerator:
 
     currentx: int = 0
     currenty: int = 0
+    while (currentx, currenty) in self.blocked_cells:
+      currentx += 1
+
     stack: list[tuple[int, int]] = []
 
     self.visited[currenty][currentx] = True
@@ -92,7 +126,6 @@ class MazeGenerator:
       print(line)
     return result
        
-
 
 if __name__ == "__main__":
   maze = MazeGenerator(20,20,seed=42)
