@@ -69,7 +69,7 @@ if __name__ == "__main__":
   except FileNotFoundError as e:
     print(f"Error reading config file: {e}.")
 
-  maze = MazeGenerator(config["WIDTH"], config["HEIGHT"], config["SEED"])
+  maze = MazeGenerator(config["WIDTH"], config["HEIGHT"], config["SEED"], config["ENTRY"], config["EXIT"])
   maze.draw_42_pattern()
   grid = maze.maze_dfs()
   rendered_maze = maze.rendering_maze()
